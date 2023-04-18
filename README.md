@@ -1,44 +1,33 @@
-# docker-gitlab-watchman
+# docker-prowler
 
-Docker image for [gitlab-watchman](https://github.com/PaperMtn/gitlab-watchman)
+Docker image for [prowler](https://github.com/prowler-cloud/prowler/)
 
-gitlab-watchman uses the GitLab API to audit GitLab for sensitive data and credentials exposed internally.
 
 ## Build
 
 ```
-docker build -t adioss/gitlab-watchman .
+docker build -t adioss/prowler .
 ```
 
 ## Usage
 
 ### Prerequisites
 
-You need a personal access token
+```
+cat .aws/config
 
-* go to the GitLab GUI
-* Settings -> Access Tokens -> Add a personal access token
-* scopes: _api_
+[default]
+aws_access_key_id = AKIAHEREHEREHHERE
+aws_secret_access_key = /fdslkfjsdlfjkzeoifjfcbckjndfkgjfd
+region = us-east-1
+```
 
 ### Basics
 
 ```
 // help
-docker run --rm adioss/gitlab-watchman -h
+docker run -ti --rm adioss/prowler -h
 
 // scan all
-docker run --rm -e GITLAB_WATCHMAN_TOKEN=abc123 -e GITLAB_WATCHMAN_URL=https://gitlab.example.com adioss/gitlab-watchman --timeframe a --all --output stdout
-docker run --rm --env-file .env adioss/gitlab-watchman --timeframe a --all --output stdout
-
-// output into a file
-docker run --rm -v $PWD/log:/home/gitlab-watchman/log -e GITLAB_WATCHMAN_TOKEN=abc123 -e GITLAB_WATCHMAN_URL=https://gitlab.example.com -e GITLAB_WATCHMAN_LOG_PATH=/home/gitlab-watchman/log adioss/gitlab-watchman --timeframe a --all --output file 
-docker run --rm -v $PWD/log:/home/gitlab-watchman/log --env-file .env adioss/gitlab-watchman --timeframe a --all --output file
-```
-
-example of .env:
-
-```
-GITLAB_WATCHMAN_URL=https://gitlab.example.com
-GITLAB_WATCHMAN_TOKEN=abc123
-GITLAB_WATCHMAN_LOG_PATH=/home/gitlab-watchman/log
+docker run -ti --rm -v $(pwd):/home/prowler adioss/prowler --verbose
 ```

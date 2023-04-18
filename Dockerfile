@@ -1,20 +1,13 @@
-FROM alpine/git AS initlayer
-WORKDIR /workdir
-RUN git clone https://github.com/PaperMtn/gitlab-watchman.git
-
 FROM python:buster
-RUN addgroup --gid 1000 gitlab-watchman
-RUN useradd -u 1000 -g 1000 gitlab-watchman
-RUN mkdir /home/gitlab-watchman
-COPY --from=initlayer /workdir/gitlab-watchman /home/gitlab-watchman
-RUN chown -R gitlab-watchman: /home/gitlab-watchman
-WORKDIR /home/gitlab-watchman
+RUN addgroup --gid 1000 prowler
+RUN useradd -u 1000 -g 1000 prowler
+RUN mkdir -p /home/prowler/.aws
+RUN chown -R prowler: /home/prowler
+WORKDIR /home/prowler
 
 RUN python3 -m pip install --upgrade pip
-RUN python3 -m pip install requests build PyYAML
-RUN python3 -m build
-RUN python3 -m pip install dist/*.whl
+RUN python3 -m pip install prowler
 
-USER gitlab-watchman
+USER prowler
 
-ENTRYPOINT ["/usr/local/bin/gitlab-watchman"]
+ENTRYPOINT ["/usr/local/bin/prowler"]
